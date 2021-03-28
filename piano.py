@@ -1,6 +1,7 @@
 import time
 import win32api
 import win32con
+from copy import deepcopy
 
 from midi.midifiles.midifiles import MidiFile
 from midi.helpers import tuner
@@ -83,6 +84,10 @@ for i,track in enumerate(midi_object.tracks):
 				last_on = info['time']
 				end_track.append(info)
 mmax = 0
+if len(end_track) == 0:
+	end_track = deepcopy(tracks)
+	for i in end_track:
+		i['time'] += 1
 for i in end_track:
 	mmax = max(mmax, i['time'] + 1)
 start = {}

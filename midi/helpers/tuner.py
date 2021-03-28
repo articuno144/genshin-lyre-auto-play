@@ -5,6 +5,11 @@ mapping_vector = np.zeros([128])
 mapping_keys = list(mapping.keys())
 for key in mapping_keys:
     mapping_vector[int(key)] = 1  # higher pitch should be assigned more weight?
+mean_pitch = 72
+pitch_range = 36
+hanning = np.zeros([128])
+assert mean_pitch + pitch_range/2 < 128, "Hanning window index error"
+hanning[int(mean_pitch - pitch_range/2): int(mean_pitch - pitch_range/2)+pitch_range] = np.hanning(pitch_range)
 
 def note_density(track):
     density_vector = np.zeros([128])
@@ -16,6 +21,7 @@ def note_density(track):
 
 def calculate_match(track, mapping_vec):
     track_note_density = note_density(track)
+    track_note_density = np.multiply(track_note_density, hanning)
     match_ratio = np.dot(track_note_density, mapping_vec) / np.sum(track_note_density)
     return match_ratio
 
